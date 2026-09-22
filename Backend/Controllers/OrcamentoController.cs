@@ -49,5 +49,28 @@ public class OrcamentoController : ControllerBase
         return Ok(orcamentoAtualizado);
     }
 
+    [HttpPut("{id}/cancelar")]
+    public async Task<IActionResult> CancelarOrcamento(int id)
+    {
+        var cancelarOrcamento = await _orcamentoService.CancelarOrcamento(id);
+        
+        return Ok(cancelarOrcamento);
+    }
 
+
+    [HttpPut("{id}/concluir")]
+    public async Task<IActionResult> ConcluirOrcamento(int id)
+    {
+        var cancelarOrcamento = await _orcamentoService.ConcluirOrcamento(id);
+        
+        return Ok(cancelarOrcamento);
+    }
+    
+    [HttpPut("{id}/avaliar")]
+    public async Task<IActionResult> AvaliarOrcamento(int id)
+    {
+        var cancelarOrcamento = await _orcamentoService.AvaliarOrcamento(id);
+        
+        return Ok(cancelarOrcamento);
+    }
 }

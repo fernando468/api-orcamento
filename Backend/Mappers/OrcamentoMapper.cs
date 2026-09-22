@@ -11,7 +11,8 @@ public abstract class OrcamentoMapper
         return new Orcamento(
                 descricao: orcamentoCriarRequestDto.Descricao,
                 cliente: cliente,
-                valor: orcamentoCriarRequestDto.Valor
+                valor: orcamentoCriarRequestDto.Valor,
+                status: StatusEnum.AguardandoAvaliacao
             );
     }
     
@@ -21,17 +22,25 @@ public abstract class OrcamentoMapper
                 Id: orcamento.Id,
                 Cliente: ClienteMapper.ToDto(orcamento.Cliente),
                 Descricao: orcamento.Descricao,
-                Valor: orcamento.Valor
+                Valor: orcamento.Valor,
+                Status: orcamento.Status
             );
     }
 
-    public static Orcamento ToUpdateEntity(OrcamentoUpdateRequestDto orcamentoUpdateRequestDto, Orcamento orcamento)
+    public static Orcamento ToUpdateEntity(OrcamentoUpdateRequestDto orcamentoUpdateRequestDto, Orcamento orcamento, StatusEnum status)
     {
         orcamento.Atualizar(
                 descricao: orcamentoUpdateRequestDto.Descricao,
-                valor: orcamentoUpdateRequestDto.Valor
+                valor: orcamentoUpdateRequestDto.Valor,
+                status: status
             );
         
+        return orcamento;
+    }
+
+    public static Orcamento ToUpdateStatusEntity(Orcamento orcamento, StatusEnum status)
+    {
+        orcamento.AtualizarStatus(status);
         return orcamento;
     }
 

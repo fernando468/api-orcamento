@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Backend.Contexts;
 using Backend.Exceptions;
 using Backend.Interfaces;
@@ -5,6 +6,7 @@ using Backend.Interfaces.Repostiories;
 using Backend.Interfaces.Services;
 using Backend.Repostiories;
 using Backend.Services;
+using Backend.Services.StateStatus;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +31,20 @@ builder.Services.AddScoped<IOrcamentoRepository, OrcamentoRepository>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddTransient<AguardandoAvaliacaoState>();
+builder.Services.AddTransient<AvaliandoState>();
+builder.Services.AddTransient<CanceladoState>();
+builder.Services.AddTransient<ConcluidoState>();
+builder.Services.AddTransient<State>();
+
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Converte enums para string nas requisições/respostas JSON
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddSwaggerGen();
 

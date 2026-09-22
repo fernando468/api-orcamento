@@ -5,6 +5,7 @@ using Backend.Interfaces.Repostiories;
 using Backend.Interfaces.Services;
 using Backend.Mappers;
 using Backend.Models;
+using Backend.Services.StateStatus;
 
 namespace Backend.Services;
 
@@ -13,16 +14,18 @@ public class OrcamentoService : IOrcamentoService
     private readonly IOrcamentoRepository _repository;
     private readonly ILogger<OrcamentoService> _logger;
     private readonly IClienteService _clienteService;
+    private readonly State _state;
 
     public OrcamentoService(IOrcamentoRepository repository, 
         ILogger<OrcamentoService> logger, 
-        IClienteService clienteService)
+        IClienteService clienteService,
+        State state)
     {
         _repository = repository;
         _logger = logger;
         _clienteService = clienteService;
+        _state = state;
     }
-
 
     public async Task<OrcamentoResponseDto> CreateAsync(OrcamentoCriarRequestDto orcamentoCriarRequestDto)
     {
@@ -35,18 +38,47 @@ public class OrcamentoService : IOrcamentoService
         
         return OrcamentoMapper.ToDto(orcamento);
     }
-    
+
 
     public async Task<OrcamentoResponseDto> UpdateAsync(int id, OrcamentoUpdateRequestDto orcamentoUpdateRequestDto)
     {
         _logger.LogInformation("Iniciando - atualizar por orçamento de id: {Id}", id);
         
         var orcamento = await GetById(id);
-        await _repository.Update(OrcamentoMapper.ToUpdateEntity(orcamentoUpdateRequestDto, orcamento));
+        await _repository.Update(OrcamentoMapper.ToUpdateEntity(orcamentoUpdateRequestDto, orcamento, orcamento.Status));
         
         _logger.LogInformation("Encerrado - atualizar por orçamento de id: {Id}", id);
         
         return OrcamentoMapper.ToDto(orcamento);
+    }
+
+    private async Task<OrcamentoResponseDto> MudarStatus(int id,
+        StatusEnum concluido)
+    {
+        _logger.LogInformation("Iniciando - avançar o status do orçamento de id: {Id}", id);
+        
+        var orcamento = await GetById(id);
+        var proximoStatus = _state.ProcessarMudancaStatus(orcamento, concluido);
+        await _repository.Update(OrcamentoMapper.ToUpdateStatusEntity(orcamento, proximoStatus));
+        
+        _logger.LogInformation("Encerrado - avançar o status do orçamento de id: {Id}", id);
+        
+        return OrcamentoMapper.ToDto(orcamento);
+    }
+
+    public async Task<OrcamentoResponseDto> ConcluirOrcamento(int id)
+    {
+        return await MudarStatus(id, StatusEnum.Concluido);
+    }
+
+    public async Task<OrcamentoResponseDto> CancelarOrcamento(int id)
+    {
+        return await MudarStatus(id, StatusEnum.Cancelado);
+    }
+    
+    public async Task<OrcamentoResponseDto> AvaliarOrcamento(int id)
+    {
+        return await MudarStatus(id, StatusEnum.Avaliando);
     }
 
     public async Task<OrcamentoResponseDto> FindByIdAsync(int id)
@@ -71,7 +103,7 @@ public class OrcamentoService : IOrcamentoService
         return OrcamentoMapper.ToDtoList(listaOrcamento);
     }
 
-    protected async Task<Orcamento> GetById(int id)
+    private async Task<Orcamento> GetById(int id)
     {
         _logger.LogInformation("Iniciando - consultar orçamento com o id: {Id}", id);
         var orcamento = await _repository.FindById(id);

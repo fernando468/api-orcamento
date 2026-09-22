@@ -24,5 +24,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Orcamento>()
             .Property(p => p.CriadoEm)
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+
+        modelBuilder.Entity<Orcamento>()
+            .Property(p => p.Status)
+            .HasConversion<string>();
     }
 }

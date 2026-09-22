@@ -14,6 +14,9 @@ public class Orcamento
     
     [Required(ErrorMessage = "Cliente é obrigatório")]
     public Cliente Cliente { get; private set; }
+    
+    [Required(ErrorMessage = "Status é obrigatório")]
+    public StatusEnum Status { get; private set; }
 
     [Required(ErrorMessage = "Valor é obrigatório")]
     public double Valor { get; private set; }
@@ -29,20 +32,29 @@ public class Orcamento
         
     }
     
-    public Orcamento(string descricao, Cliente cliente, double valor)
+    public Orcamento(string descricao, Cliente cliente, double valor, StatusEnum status)
     {
         Descricao = descricao;
         Cliente = cliente;
         Valor = valor;
+        Status = status;
         
         CriadoEm = DateTime.UtcNow;
         AtualizadoEm = DateTime.UtcNow;
     }
     
-    public void Atualizar(string descricao, double valor)
+    public void Atualizar(string descricao, double valor, StatusEnum status)
     {
         Descricao = descricao;
         Valor = valor;
+        Status = status;
+        
+        AtualizadoEm = DateTime.UtcNow;
+    }
+
+    public void AtualizarStatus(StatusEnum status)
+    {
+        Status = status;
         
         AtualizadoEm = DateTime.UtcNow;
     }
