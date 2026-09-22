@@ -1,5 +1,7 @@
-﻿using Backend.Mappers;
+﻿using System.ComponentModel.DataAnnotations;
+using Backend.Mappers;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Exceptions;
 
@@ -16,18 +18,15 @@ public class GlobalExceptionHandler : IExceptionHandler
         Exception exception, 
         CancellationToken cancellationToken)
     {
-        _logger.LogError(
-            exception,
-            "Ocorreu uma exceção não tratada: {Message}",
-            exception.Message);
+        _logger.LogError(exception, "Ocorreu uma exceção não tratada: {Message}", exception.Message);
 
         var (statusCode, descricao) = exception switch
         {
-            NotFoundException =>
-                (StatusCodes.Status404NotFound, exception.Message),
-
-            _ =>
-                (StatusCodes.Status500InternalServerError, "Internal server error")
+            NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
+            BadRequestException => (StatusCodes.Status400BadRequest, exception.Message),
+            InvalidOperationException => (StatusCodes.Status422UnprocessableEntity, exception.Message),
+            DbUpdateException => (StatusCodes.Status400BadRequest, "Erro ao persistir ou consultar dados"),
+            _ => (StatusCodes.Status500InternalServerError, "Internal server error")
         };
 
         httpContext.Response.StatusCode = statusCode;

@@ -1,5 +1,6 @@
 ﻿using Backend.Dtos.Requests;
 using Backend.Dtos.Responses;
+using Backend.Enums;
 using Backend.Models;
 
 namespace Backend.Mappers;

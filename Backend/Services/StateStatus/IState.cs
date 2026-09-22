@@ -1,4 +1,6 @@
-﻿namespace Backend.Services.StateStatus;
+﻿using Backend.Enums;
+
+namespace Backend.Services.StateStatus;
 
 public interface IState
 {

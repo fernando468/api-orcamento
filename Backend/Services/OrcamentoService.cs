@@ -1,5 +1,6 @@
 ﻿using Backend.Dtos.Requests;
 using Backend.Dtos.Responses;
+using Backend.Enums;
 using Backend.Exceptions;
 using Backend.Interfaces.Repostiories;
 using Backend.Interfaces.Services;
@@ -33,6 +34,7 @@ public class OrcamentoService : IOrcamentoService
         
         var cliente = await _clienteService.GetById(orcamentoCriarRequestDto.ClienteId);
         var orcamento = OrcamentoMapper.ToEntity(orcamentoCriarRequestDto, cliente);
+        await _repository.Save(orcamento);
         
         _logger.LogInformation("Encerrado - criar orçamento para o clienteId: {Id}", orcamentoCriarRequestDto.ClienteId);
         

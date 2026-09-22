@@ -58,9 +58,13 @@ dotnet restore
 
 ### 3) Aplicar as migrações do banco
 
-```bash
-dotnet ef database update
-```
+> ```bash
+> dotnet ef database update
+> ```
+> Caso o comando anterior não funcione
+> ```bash
+> dotnet ef database update --project .\Backend\Backend.csproj
+> ```
 
 > Caso o comando `dotnet ef` não esteja disponível, instale a ferramenta global com:
 >

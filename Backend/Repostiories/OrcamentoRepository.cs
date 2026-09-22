@@ -28,12 +28,12 @@ public class OrcamentoRepository : IOrcamentoRepository
 
     public async Task<Orcamento?> FindById(int id)
     {
-        return await _context.Orcamentos.FirstOrDefaultAsync(orcamento => orcamento.Id == id);
+        return await _context.Orcamentos.Include(orcamento => orcamento.Cliente).FirstOrDefaultAsync(orcamento => orcamento.Id == id);
     }
 
     public async Task<IEnumerable<Orcamento>> FindAll()
     {
-        return await _context.Orcamentos.ToListAsync();
+        return await _context.Orcamentos.Include(orcamento => orcamento.Cliente).ToListAsync();
     }
 
 }
