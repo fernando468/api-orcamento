@@ -77,5 +77,6 @@ dotnet run
 A API ficará disponível em:
 
 - HTTP: `https://localhost:7072` ou `http://localhost:5058`
+- Swagger: `https://localhost:7072/swagger`
 
 O ambiente de desenvolvimento usa HTTPS por padrão e a aplicação também registra endpoints OpenAPI.
