@@ -24,6 +24,19 @@ public class ClienteService : IClienteService
     {
         _logger.LogInformation("Iniciando - criar cliente: {Cpf}", clienteRequestDto.Cpf.Substring(0, 3));
         
+        var clientePorCpf = await _repository.FindByCpfAsync(clienteRequestDto.Cpf);
+        if (clientePorCpf != null)
+        {
+            throw new InvalidOperationException("Cliente com este CPF já cadastrado");
+        }
+
+        var clientePorEmail = await _repository.FindByEmailAsync(clienteRequestDto.Email);
+        
+        if (clientePorEmail != null)
+        {
+            throw new InvalidOperationException("Cliente com este E-mail já cadastrado");
+        }
+
         var cliente = ClienteMapper.ToEntity(clienteRequestDto);
         await _repository.Save(cliente);
         

@@ -42,5 +42,15 @@ public class ClienteRepository : IClienteRepository
         _context.Clientes.Remove(cliente);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<Cliente?> FindByEmailAsync(string email)
+    {
+        return await _context.Clientes.FirstOrDefaultAsync(cliente => cliente.Email == email);
+    }
+
+    public async Task<Cliente?> FindByCpfAsync(string cpf)
+    {
+        return await _context.Clientes.FirstOrDefaultAsync(cliente => cliente.Cpf == cpf);
+    }
     
 }
