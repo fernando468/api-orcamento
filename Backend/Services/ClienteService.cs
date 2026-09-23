@@ -57,7 +57,7 @@ public class ClienteService : IClienteService
         return ClienteMapper.ToDto(cliente);
     }
 
-    public async Task<ClienteResponseDto?> FindByIdAsync(int id)
+    public async Task<ClienteResponseDto> FindByIdAsync(int id)
     {
         _logger.LogInformation("Iniciando - buscar cliente com o id: {Id}", id);
         

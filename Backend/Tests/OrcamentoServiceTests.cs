@@ -16,10 +16,8 @@ public class OrcamentoServiceTests
 {
     private readonly Mock<IOrcamentoRepository> _repositoryMock;
     private readonly OrcamentoService _service;
-    private readonly ILogger<OrcamentoService> _logger;
     private readonly Mock<IClienteService> _clienteServiceMock;
-    private readonly State _state;
-    
+
     private readonly AguardandoAvaliacaoState _aguardandoAvaliacaoState = new();
     private readonly AvaliandoState _avaliandoState = new();
     private readonly CanceladoState _canceladoState = new();
@@ -27,15 +25,16 @@ public class OrcamentoServiceTests
     
     public OrcamentoServiceTests()
     {
-        _logger = new LoggerFactory().CreateLogger<OrcamentoService>();
-        _repositoryMock = new Mock<IOrcamentoRepository>();
-        _clienteServiceMock = new Mock<IClienteService>();
-        _state = new State(
+        var logger = new LoggerFactory().CreateLogger<OrcamentoService>();
+        var state = new State(
             aguardandoAvaliacaoState: _aguardandoAvaliacaoState,
             avaliandoState: _avaliandoState,
             canceladoState: _canceladoState,
             concluidoState: _concluidoState);
-        _service = new OrcamentoService(_repositoryMock.Object, _logger, _clienteServiceMock.Object, _state);
+        
+        _repositoryMock = new Mock<IOrcamentoRepository>();
+        _clienteServiceMock = new Mock<IClienteService>();
+        _service = new OrcamentoService(_repositoryMock.Object, logger, _clienteServiceMock.Object, state);
         
     }
 

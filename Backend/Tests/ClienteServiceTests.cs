@@ -15,13 +15,13 @@ public class ClienteServiceTests
 {
     private readonly Mock<IClienteRepository> _repositoryMock;
     private readonly ClienteService _service;
-    private readonly ILogger<ClienteService> _logger;
 
     public ClienteServiceTests()
     {
-        _logger = new LoggerFactory().CreateLogger<ClienteService>();
+        var logger = new LoggerFactory().CreateLogger<ClienteService>();
+        
         _repositoryMock = new Mock<IClienteRepository>();
-        _service = new ClienteService(_repositoryMock.Object, _logger);
+        _service = new ClienteService(_repositoryMock.Object, logger);
     }
 
     [Fact]
