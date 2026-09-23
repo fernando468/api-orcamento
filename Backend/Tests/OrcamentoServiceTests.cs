@@ -6,6 +6,7 @@ using Backend.Interfaces.Services;
 using Backend.Models;
 using Backend.Services;
 using Backend.Services.StateStatus;
+using Backend.Tests.Factory;
 using Moq;
 using Xunit;
 
@@ -41,21 +42,9 @@ public class OrcamentoServiceTests
     [Fact]
     public async Task DeveCriarOrcamentoComSucesso()
     {
-        var orcamentoRequestDto = new OrcamentoCriarRequestDto(
-            ClienteId: 1,
-            Descricao: "Descrição",
-            Valor: 2500
-        );
-        
-        var cliente = new Cliente(
-            nome: "Nome",
-            cpf: "12345678910",
-            telefone: "44900001111",
-            email: "email@email.com"
-        );
-        
-        var property = typeof(Cliente).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        property?.SetValue(cliente, 1);
+        var orcamentoRequestDto = OrcamentoMockFactoryTest.ToOrcamentoCriarRequestDto();
+        var cliente = ClienteMockFactoryTest.ToClienteEntity();
+        PropertyReflection<Cliente>.Set(field: "Id", type: cliente, value: 1);
 
         _clienteServiceMock.Setup(service => service.GetById(1))
             .ReturnsAsync(cliente);
@@ -77,25 +66,10 @@ public class OrcamentoServiceTests
     [Fact]
     public async Task DeveMudarStatusDeAguardandoAvaliacaoParaCancelado()
     {
-        var cliente = new Cliente(
-            nome: "Nome",
-            cpf: "12345678910",
-            telefone: "44900001111",
-            email: "email@email.com"
-        );
+        var orcamento = OrcamentoMockFactoryTest.ToOrcamentoEntity(StatusEnum.AguardandoAvaliacao);
+        PropertyReflection<Cliente>.Set(field: "Id", type: orcamento.Cliente, value: 1);
         
-        var propertyCliente = typeof(Cliente).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyCliente?.SetValue(cliente, 1);
-        
-        var orcamento = new Orcamento(
-            descricao: "Descrição",
-            valor: 2800,
-            cliente: cliente,
-            status: StatusEnum.AguardandoAvaliacao
-        );
-        
-        var propertyOrcamento = typeof(Orcamento).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyOrcamento?.SetValue(orcamento, 1);
+        PropertyReflection<Orcamento>.Set(field: "Id", type: orcamento, value: 1);
         
         _repositoryMock
             .Setup(repository => repository.FindById(1))
@@ -110,25 +84,10 @@ public class OrcamentoServiceTests
     [Fact]
     public async Task DeveMudarStatusDeAguardandoAvaliacaoParaAvaliarOrcamento()
     {
-        var cliente = new Cliente(
-            nome: "Nome",
-            cpf: "12345678910",
-            telefone: "44900001111",
-            email: "email@email.com"
-        );
+        var orcamento = OrcamentoMockFactoryTest.ToOrcamentoEntity(StatusEnum.AguardandoAvaliacao);
+        PropertyReflection<Cliente>.Set(field: "Id", type: orcamento.Cliente, value: 1);
         
-        var propertyCliente = typeof(Cliente).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyCliente?.SetValue(cliente, 1);
-        
-        var orcamento = new Orcamento(
-            descricao: "Descrição",
-            valor: 2800,
-            cliente: cliente,
-            status: StatusEnum.AguardandoAvaliacao
-        );
-        
-        var propertyOrcamento = typeof(Orcamento).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyOrcamento?.SetValue(orcamento, 1);
+        PropertyReflection<Orcamento>.Set(field: "Id", type: orcamento, value: 1);
         
         _repositoryMock
             .Setup(repository => repository.FindById(1))
@@ -144,25 +103,8 @@ public class OrcamentoServiceTests
     [Fact]
     public async Task DeveOcorrerErroAoMudarStatusDeAguardandoAvaliacaoParaConcluido()
     {
-        var cliente = new Cliente(
-            nome: "Nome",
-            cpf: "12345678910",
-            telefone: "44900001111",
-            email: "email@email.com"
-        );
-        
-        var propertyCliente = typeof(Cliente).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyCliente?.SetValue(cliente, 1);
-        
-        var orcamento = new Orcamento(
-            descricao: "Descrição",
-            valor: 2800,
-            cliente: cliente,
-            status: StatusEnum.AguardandoAvaliacao
-        );
-        
-        var propertyOrcamento = typeof(Orcamento).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyOrcamento?.SetValue(orcamento, 1);
+        var orcamento = OrcamentoMockFactoryTest.ToOrcamentoEntity(StatusEnum.AguardandoAvaliacao);
+        PropertyReflection<Cliente>.Set(field: "Id", type: orcamento.Cliente, value: 1);
         
         _repositoryMock
             .Setup(repository => repository.FindById(1))
@@ -179,25 +121,10 @@ public class OrcamentoServiceTests
     [Fact]
     public async Task DeveOcorrerErroAoMudarStatusDeCanceladoParaConcluido()
     {
-        var cliente = new Cliente(
-            nome: "Nome",
-            cpf: "12345678910",
-            telefone: "44900001111",
-            email: "email@email.com"
-        );
+        var orcamento = OrcamentoMockFactoryTest.ToOrcamentoEntity(StatusEnum.Cancelado);
+        PropertyReflection<Cliente>.Set(field: "Id", type: orcamento.Cliente, value: 1);
         
-        var propertyCliente = typeof(Cliente).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyCliente?.SetValue(cliente, 1);
-        
-        var orcamento = new Orcamento(
-            descricao: "Descrição",
-            valor: 2800,
-            cliente: cliente,
-            status: StatusEnum.Cancelado
-        );
-        
-        var propertyOrcamento = typeof(Orcamento).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyOrcamento?.SetValue(orcamento, 1);
+        PropertyReflection<Orcamento>.Set(field: "Id", type: orcamento, value: 1);
         
         _repositoryMock
             .Setup(repository => repository.FindById(1))
@@ -214,25 +141,10 @@ public class OrcamentoServiceTests
     [Fact]
     public async Task DeveOcorrerErroAoMudarStatusDeConcluidoParaCancelado()
     {
-        var cliente = new Cliente(
-            nome: "Nome",
-            cpf: "12345678910",
-            telefone: "44900001111",
-            email: "email@email.com"
-        );
-        
-        var propertyCliente = typeof(Cliente).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyCliente?.SetValue(cliente, 1);
-        
-        var orcamento = new Orcamento(
-            descricao: "Descrição",
-            valor: 2800,
-            cliente: cliente,
-            status: StatusEnum.Concluido
-        );
-        
-        var propertyOrcamento = typeof(Orcamento).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        propertyOrcamento?.SetValue(orcamento, 1);
+        var orcamento = OrcamentoMockFactoryTest.ToOrcamentoEntity(StatusEnum.Concluido);
+        PropertyReflection<Cliente>.Set(field: "Id", type: orcamento.Cliente, value: 1);
+
+        PropertyReflection<Orcamento>.Set(field: "Id", type: orcamento, value: 1);
         
         _repositoryMock
             .Setup(repository => repository.FindById(1))

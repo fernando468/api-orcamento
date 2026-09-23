@@ -5,6 +5,7 @@ using Backend.Interfaces.Services;
 using Backend.Mappers;
 using Backend.Models;
 using Backend.Services;
+using Backend.Tests.Factory;
 using Moq;
 using Xunit;
 
@@ -26,12 +27,7 @@ public class ClienteServiceTests
     [Fact]
     public async Task DeveCriarNovoCliente()
     {
-        var clienteRequestDto = new ClienteRequestDto(
-                Nome: "Nome",
-                Cpf: "12345678910",
-                Telefone: "44900001111",
-                Email: "email@email.com"
-            );
+        var clienteRequestDto = ClienteMockFactoryTest.ToClienteResponseDto();
         var clienteCriado = await _service.CreateAsync(clienteRequestDto);
         
         Assert.NotNull(clienteCriado);
@@ -44,13 +40,7 @@ public class ClienteServiceTests
     [Fact]
     public async Task DeveOcorrerErroQuandoClienteComMesmoCpf()
     {
-        var clienteRequestDto = new ClienteRequestDto(
-            Nome: "Nome",
-            Cpf: "12345678910",
-            Telefone: "44900001111",
-            Email: "email@email.com"
-        );
-        
+        var clienteRequestDto = ClienteMockFactoryTest.ToClienteResponseDto();
         var clienteExistente = ClienteMapper.ToEntity(clienteRequestDto);
         _repositoryMock
             .Setup(repository => repository.FindByCpfAsync(clienteRequestDto.Cpf))
@@ -68,13 +58,7 @@ public class ClienteServiceTests
     [Fact]
     public async Task DeveOcorrerErroQuandoClienteComMesmoEmail()
     {
-        var clienteRequestDto = new ClienteRequestDto(
-            Nome: "Nome",
-            Cpf: "12345678910",
-            Telefone: "44900001111",
-            Email: "email@email.com"
-        );
-        
+        var clienteRequestDto = ClienteMockFactoryTest.ToClienteResponseDto();
         var clienteExistente = ClienteMapper.ToEntity(clienteRequestDto);
         _repositoryMock
             .Setup(repository => repository.FindByEmailAsync(clienteRequestDto.Email))
@@ -92,18 +76,12 @@ public class ClienteServiceTests
     [Fact]
     public async Task DeveBuscarComSucessoClientePorId()
     {
-        var cliente = new Cliente(
-            nome: "Nome",
-            cpf: "12345678910",
-            telefone: "44900001111",
-            email: "email@email.com"
-        );
+        var cliente = ClienteMockFactoryTest.ToClienteEntity();
         _repositoryMock
             .Setup(repository => repository.FindById(1))
             .ReturnsAsync(cliente);
         
-        var property = typeof(Cliente).GetProperty("Id", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-        property?.SetValue(cliente, 1);
+        PropertyReflection<Cliente>.Set(field: "Id", type: cliente, value: 1);
         
         var clienteResponseDto = await _service.FindByIdAsync(1);
         
